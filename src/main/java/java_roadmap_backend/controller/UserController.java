@@ -4,9 +4,10 @@ import java_roadmap_backend.entity.User;
 import java_roadmap_backend.repository.UserRepository;
 import java_roadmap_backend.dto.LoginRequest;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.*;
+
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -25,14 +26,20 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public User signup(@RequestBody User user) {
+public ResponseEntity<?> signup(@RequestBody User user) {
 
-        user.setPassword(
-                passwordEncoder.encode(user.getPassword())
-        );
-
-        return userRepository.save(user);
+    if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+        return ResponseEntity
+                .badRequest()
+                .body("An account with this email already exists.");
     }
+
+    user.setPassword(
+            passwordEncoder.encode(user.getPassword())
+    );
+
+    return ResponseEntity.ok(userRepository.save(user));
+}
 
     @PostMapping("/login")
     public String login(@RequestBody LoginRequest request) {
