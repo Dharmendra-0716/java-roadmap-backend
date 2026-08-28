@@ -7,13 +7,14 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class JwtService {
 
-    private final String secret =
-            "JavaRoadmapSuperSecretKey2026ForJwtAuthentication123456";
+    @Value("${jwt.secret}")
+    private String secret;
 
     private final long expiration = 1000L * 60 * 60 * 24;
 
